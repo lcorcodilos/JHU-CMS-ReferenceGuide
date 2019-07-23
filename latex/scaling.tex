@@ -8,3 +8,25 @@ This section covers different types of corrections, weights, re-weights, scaling
 \subsection{Tagging}
 
 \subsection{Triggers}
+\subsubsection*{Using High Level Triggers (HLTs)}
+High Level Triggers are set to 0 or 1 depending if their conditions are satisfied. Some of these are very simple like HLT\_PFHT1050 which says ``true if the transverse hadronic activity/energy is greater than 1050 GeV'' (PF means the variables are reconstructed using the Particle Flow algorithm). Others are more complicated like AK8PFJet420\_TrimMass30 which says ``true if there's an AK8 jet with pt greater than 420 GeV and it's mass after `trimming' is greater than 30 GeV.'' Analyses usually use a combination of logical ORs of these triggers.
+
+In some cases, the simulation and data don't have all of the trigger bits. That means the bits won't get saved. In this case, the trigger is treated as if it's false. 
+
+\subsection{Cross Sections and Luminosity}
+Ignoring the fact that we cannot simulate physics exactly, one still cannot directly compare simulation against data because the number of simulated events for process X will not match the number of events where process X actually occured in data. To correct for this, we renormalize the yield to the cross section of the process and luminosity of the data. This is weight is derived with
+\begin{equation}
+    \frac{xsec*lumi}{nevents}
+\end{equation}
+
+where $xsec$ is the cross section, $lumi$ is the lumionsity of data collected, and $nevents$ is the number of events generated. Note that $nevents$ is NOT the number of events remaining after making a selection - it has to be the number of events generated before any selection is made. Making a selection first would introduce an efficiency term which we don't care to consider at this step (that's what the other corrections to simulation are for).
+
+Applying this weight will normalize the simulation to a yield comparable to the data.
+
+\subsubsection{Signal simulation}
+Signal simulation is treated uniquely relative to the simulation of backgrounds because the backgrounds have been studied and their cross sections are known (with an uncertainty of course). With signal, we typically want to solve for the cross section. This doesn't mean you can't use the theoretical cross section though. In fact, using it can be useful to set the scale and allow one to solve for a unitless normalization of the simulation template called the \verb"signal strength".
+
+The signal strength is fit for when comparing data against a background estimate. In the backgroud-only hypothesis, it is fixed to 0 because the hypothesis assumes no signal exists. In the so-called signal+background hypothesis, the signal strength is left to float and the fit tries to ``fill-in'' parts of the distribution with it. If the signal simulation template is normalized to its theoretical cross section and the luminosity of the data being analyzed, then a signal strength of 1 means the template is exact. A value of 2 means there is twice as much signal as the simulation (including the cross section value) predicts and so-on. 
+
+If the signal simulation is only scaled to the luminosity (this means the cross section is effectively set to 1), then fitting for the signal strength is equivalent to fitting for the true cross section. This may be more desirable in certain circumstances and both methods can be used to check that the fit is stable and finds the same physical answer in both scenarios.
+

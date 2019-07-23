@@ -1,0 +1,19 @@
+% Glossary items 
+% New entry template
+% \newglossaryentry{refkey}{
+%     name=tempname,
+%     description={Description here}
+% }
+
+% DON'T PUT A PERIOD AT THE END OF YOUR DESCRIPTIONS. MAKEGLOSSARIES DOES IT AUTOMATICALLY (though I don't know why...)
+
+\newglossaryentry{Nminus1}{
+    name=N-1 Plot,
+    description={A plot as a function of variable X where a selection has been applied to all variables except X (N total variables with N-1 cuts applied). These are typically used to either compare the shapes of signal and background as a function of X or to scan for an optimal point to place a cut to maximize the (cumulative) $S/\sqrt(B)$. It's not uncommon to also do N-2 or N-3 plots depending on the scenario}
+}
+ 
+\newglossaryentry{signalstrength}{
+    name=Signal strength/$r$/$\mu$,
+    description={A normalization factor that is fit for when comparing data against a background estimate. In the backgroud-only hypothesis, this is 0 because the hypothesis assumes no signal exists. In the so-called signal+background hypothesis, the signal strenght is left to float and ``fill-in'' any peaks in the distribution. If the signal simulation template is normalized to its theoretical cross section and the luminosity of the data being analyzed, then a signal strenght of one means the template is exact. A value of two means there is twice as much signal as the simulation (including the cross section value) predicts. If the signal simulation is only scaled to the luminosity (this means the cross section is effectively set to 1), then fitting for the signal strength is equivalent to fitting for the true cross section}
+}
+\glsaddallunused

@@ -2,6 +2,24 @@
 
 \subsection*{Using DAS (Data Aggregation System)}
 
+The easiest way to look for MC and data samples is with DAS. Which is \href{https://cmsweb.cern.ch/das/}{here}. 
+The datasets will generally have the format ``/XXXX/YYYY/ZZZZ`` .
+
+The XXXX will be something about the actual physics content of the dataset, eg WW\_TuneCP5\_13TeV-pythia8 is for WW simulation made with Pythia using the tune CP5. 
+For data it will describe the triggers used for that dataset eg ``SingleMuon``.
+
+The YYYY will be about the production info of that data set. 
+For MC it will be something like ``RunIIAutumn18MiniAOD-102X\_upgrade2018\_realistic\_v15-v2`` which means it was made during the RunIIAutumn18 round of MC production 
+in the 102X release with some other info. For data it will be something like Run2018A-17Sep2018-v2 which means its from RunA from 2018 data taking and it was reconstructed in the 17Sep2018 batch.
+Often times data is reconstructed multiple (Re-Reco'ed) times with progressively better calibrations, usually you want the latest one. 
+
+The ZZZZ will be the data type like MINIAOD or NANOAOD. 
+
+You can use wildcards to help you find things if you don't know the exact name. 
+Once you find a dataset you can look at a list of all its files  (its often a good idea to run on one file before you run a full crab job).
+There is also a link to cross-section database entry for that dataset which sometimes works. Usually this cross section is not the most accurate one, but it is useful as a starting point. 
+
+
 \subsection*{$t\bar{t}$ Simulation}
 \begin{itemize}
     \item For 2016, $t\bar{t}$ MC was generated for inclusive decays (meaning, all possible branchings of the two top quarks were allowed). For 2017 and 2018, decays were split into all-hadronic, semi-leptonic, and leptonic (denoted 2L2Nu).

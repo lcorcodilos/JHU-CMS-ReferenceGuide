@@ -1,6 +1,22 @@
 \section{Corrections, Weights, and Scaling}
 This section covers different types of corrections, weights, re-weights, scaling, and other multiplicative factors required because of either differences in simulation and data or known inconsistencies in reconstruction algorithms that affect objects in both simulation and data. Each section briefly covers the reason for the corrections, how they are derived, and where to find the latest values and uncertainties.
 
+\subsection{Scale Factors}
+Because of our imperfect simulation, sometimes the efficiency of making a cut on a MC sample will not have the same efficiency as making the same selection on data. 
+For example it might be that requiring electrons to pass the Medium ID selects 70\% of real electrons in simulation but only selects 68\% of electrons in real data.
+In order to fix our simulation to match the data, a scale factor, given by the efficiency in data divided by the efficiency in MC is used.
+In this case that would be $\frac{0.68}{0.7} = 0.971$. 
+So then for every event in simulation where we required an electron to pass a Medium ID and it did, we would multiply the weight of that event by $0.971$ so that 
+the MC distribution would match the one in data. 
+
+Note that this was a very simplified example. In general the efficiency, and thus the scale factors (SF's), will depend on the pt and eta of the object you are requiring the selection on.
+Things that scale factors are typically applied to are triggers, ID's, isolation selections, reconstruction efficiencies, b-tagging selections, etc. 
+Often times these scale factors will be provided by the various object groups like Muon POG, EGamma POG etc. Sometimes you have to derive them yourself which can be annoying. 
+
+The most common method of measuring scale factors is called Tag and Probe.
+\href{https://twiki.cern.ch/twiki/bin/view/CMSPublic/TagAndProbe}{This page} is very outdated but has a good description of Tag and Probe. 
+
+
 \subsection{Jet Corrections}
 
 \subsection{Pileup}
@@ -8,19 +24,38 @@ This section covers different types of corrections, weights, re-weights, scaling
 \subsection{Tagging}
 
 \subsection{Triggers}
+
+There are way too many collisions for CMS to process and record each one. Also the vast majority of collisions are just going to be uninteresting low energy QCD junk anyway. 
+For this reason triggers are used. Triggers are flags that quickly determine if the event is interesting and is worth being reconstructed and saved. 
+Every event that we actually record in data passed some trigger.
+
+CMS uses a two level trigger system. 
+The first level is called the L1 trigger which for every event has 4 microseconds to decide whether it is interesting or not. 
+Generally the L1 trigger has to use very basic detector information because it doesn't have time to do reconstruction. 
+Events that pass the L1 trigger are then given to the HLT trigger which has \~100 ms per event to decide if it should be kept. 
+So it can afford do a little reconstruction to figure out if the event is interesting or not, but still no where near the time to do a fully detailed reconstruction. 
+If the event then passes the HLT it is actually saved. 
+
 \subsubsection*{Using High Level Triggers (HLTs)}
 High Level Triggers are set to 0 or 1 depending if their conditions are satisfied. Some of these are very simple like HLT\_PFHT1050 which says ``true if the transverse hadronic activity/energy is greater than 1050 GeV'' (PF means the variables are reconstructed using the Particle Flow algorithm). Others are more complicated like AK8PFJet420\_TrimMass30 which says ``true if there's an AK8 jet with pt greater than 420 GeV and it's mass after `trimming' is greater than 30 GeV.'' Analyses usually use a combination of logical ORs of these triggers.
+The 'Menu' of what HLT triggers are available for you use changes for each run.
 
 In some cases, the simulation and data don't have all of the trigger bits. That means the bits won't get saved. In this case, the trigger is treated as if it's false. 
 
 \subsection{Cross Sections and Luminosity}
 Ignoring the fact that we cannot simulate physics exactly, one still cannot directly compare simulation against data because the number of simulated events for process X will not match the number of events where process X actually occured in data. To correct for this, we renormalize the yield to the cross section of the process and luminosity of the data. This is weight is derived with
 \begin{equation}
-    \frac{xsec*lumi}{nevents}
+    \frac{xsec*lumi}{total\_mc\_weight}
 \end{equation}
 
-where $xsec$ is the cross section, $lumi$ is the lumionsity of data collected, and $nevents$ is the number of events generated. Note that $nevents$ is NOT the number of events remaining after making a selection - it has to be the number of events generated before any selection is made. Making a selection first would introduce an efficiency term which we don't care to consider at this step (that's what the other corrections to simulation are for).
+where $xsec$ is the cross section, $lumi$ is the lumionsity of data collected, and $total\_mc\_weight$ is total weight of all the produced MC events. 
+In the simple case, where the MC generator gives every event the same weight, than the total weight is just the total number of events. 
+Sometimes however, just to be annoying, generators produce events to have different weights and sometimes events even have negative weights (aMC@NLO does this). 
+So in general the total weight is the sum of the weights of all the produced events. 
 
+Note that we cannot just include the weight of events remaining after making a selection - it has to be the number of events generated before any selection is made. 
+Making a selection first would ignore the fact there are some events we for a given process that we do not reconstruct but still happen. 
+We correct for the 'efficiency' of our selection in other steps (that's what the other corrections to simulation are for).
 Applying this weight will normalize the simulation to a yield comparable to the data.
 
 \subsubsection{Signal simulation}
